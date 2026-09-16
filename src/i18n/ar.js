@@ -39,7 +39,7 @@ export const i18nAr = {
   close: 'إغلاق',
   applicant: 'المتقدم',
   amount: 'المبلغ',
-  risk: 'المخاطر',
+  risk2: 'المخاطر',
   status: 'الحالة',
   assignee: 'المسؤول',
   actions: 'الإجراءات',
