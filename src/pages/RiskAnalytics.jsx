@@ -1,140 +1,284 @@
-import React from 'react'
-import { Card, Badge } from '../components/Shared'
-import { MiniChart, ScoreDistribution } from '../components/Charts'
-import { APPLICATIONS, SECTOR_EXPOSURE, usePulse } from '../lib/data'
+import React, { useState, useMemo } from 'react'
+import appData from '../lib/data'
 
-export function RiskAnalytics({ lang }) {
-  const { insights } = usePulse()
+const COUNTRIES = [
+  { key: 'AE', label: 'UAE', risk: 'low' },
+  { key: 'SA', label: 'Saudi Arabia', risk: 'medium' },
+  { key: 'EG', label: 'Egypt', risk: 'high' },
+  { key: 'KW', label: 'Kuwait', risk: 'low' },
+  { key: 'QA', label: 'Qatar', risk: 'low' },
+  { key: 'BH', label: 'Bahrain', risk: 'medium' },
+  { key: 'OM', label: 'Oman', risk: 'medium' },
+  { key: 'JO', label: 'Jordan', risk: 'medium' },
+  { key: 'LB', label: 'Lebanon', risk: 'high' },
+  { key: 'IQ', label: 'Iraq', risk: 'high' },
+]
 
-  const sectorData = SECTOR_EXPOSURE.map(s => ({
-    ...s,
-    label: lang === 'ar' ? s.sector : s.sector,
-  }))
+const SECTORS = [
+  'Retail',
+  'Construction',
+  'Healthcare',
+  'Technology',
+  'Agriculture',
+  'Manufacturing',
+  'Transport',
+  'Hospitality',
+]
+
+const SECTOR_RISK_DATA = [
+  { sector: 'Retail', exposure: 35, rating: 'medium' },
+  { sector: 'Construction', exposure: 28, rating: 'high' },
+  { sector: 'Healthcare', exposure: 18, rating: 'low' },
+  { sector: 'Technology', exposure: 12, rating: 'medium' },
+  { sector: 'Agriculture', exposure: 7, rating: 'low' },
+  { sector: 'Manufacturing', exposure: 14, rating: 'medium' },
+  { sector: 'Transport', exposure: 10, rating: 'low' },
+  { sector: 'Hospitality', exposure: 8, rating: 'medium' },
+]
+
+export function RiskAnalytics({ titles, locale }) {
+  const [selectedCountry, setSelectedCountry] = useState('AE')
+
+  const countryRisk = useMemo(() => {
+    return COUNTRIES.find(c => c.key === selectedCountry) || COUNTRIES[0]
+  }, [selectedCountry])
+
+  const countryRiskTrend = useMemo(() => {
+    if (countryRisk.risk === 'low') return { change: '+0.2%', direction: 'up' }
+    if (countryRisk.risk === 'medium') return { change: '+1.1%', direction: 'up' }
+    return { change: '+2.8%', direction: 'up' }
+  }, [countryRisk])
+
+  const sectorBreakdown = useMemo(() => SECTOR_RISK_DATA, [])
+
+  const exposureByTenor = useMemo(() => [
+    { tenor: '< 1 year', exposure: 18, rating: 'low' },
+    { tenor: '1-2 years', exposure: 35, rating: 'medium' },
+    { tenor: '2-3 years', exposure: 28, rating: 'medium' },
+    { tenor: '> 3 years', exposure: 12, rating: 'high' },
+    { tenor: 'Unstructured', exposure: 7, rating: 'high' },
+  ], [])
 
   return (
     <div className="risk-page">
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-md)', marginBottom: 'var(--spacing-lg)' }}>
-        {[
-          { label: lang === 'ar' ? 'نسبة الـ NPL' : 'NPL Ratio', value: '2.4%', icon: '⚠️', color: 'var(--accent-amber)', trend: '+0.3%', highlight: true },
-          { label: lang === 'ar' ? 'قروض عالية المخاطر' : 'High Risk Loans', value: '8', icon: '🎯', color: 'var(--accent-rose)', trend: '-2', highlight: true },
-          { label: lang === 'ar' ? 'متوسط التقييم' : 'Avg Portfolio Score', value: '642', icon: '📊', color: 'var(--accent-cyan)', trend: '+12', highlight: false },
-          { label: lang === 'ar' ? 'عائد المخاطر' : 'Risk-Adjusted Return', value: '8.4%', icon: '💰', color: 'var(--accent-emerald)', trend: '+0.5%', highlight: false },
-        ].map((stat, i) => (
-          <Card key={i} style={{ padding: 'var(--spacing-md)', background: stat.highlight ? `${stat.color}08` : undefined, border: stat.highlight ? `1px solid ${stat.color}30` : undefined }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-sm)' }}>
-              <span style={{ fontSize: '28px', marginRight: 'var(--spacing-sm)' }}>{stat.icon}</span>
-              {stat.trend && (
-                <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 6px', borderRadius: '4px', background: stat.trend.startsWith('+') ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)', color: stat.trend.startsWith('+') ? 'var(--accent-emerald)' : 'var(--accent-rose)' }}>
-                  {stat.trend}
+      <h1>
+        {titles?.risk?.[locale] || 'Risk Analytics'}
+      </h1>
+
+      {/* KPI Cards */}
+      <div className="risk-kpi-grid">
+        <div className="risk-kpi-card">
+          <div className="kpi-label">Portfolio Risk Score</div>
+          <div className="kpi-value">647</div>
+          <div className="kpi-trend risk-trend-up">▲ 3.2%</div>
+        </div>
+        <div className="risk-kpi-card">
+          <div className="kpi-label">High Risk Exposure</div>
+          <div className="kpi-value">23.4%</div>
+          <div className="kpi-trend risk-trend-down">▼ 1.1%</div>
+        </div>
+        <div className="risk-kpi-card">
+          <div className="kpi-label">Probable Loss</div>
+          <div className="kpi-value">$12.8M</div>
+          <div className="kpi-trend risk-trend-up">▲ 0.8%</div>
+        </div>
+        <div className="risk-kpi-card">
+          <div className="kpi-label">Concentration Risk</div>
+          <div className="kpi-value">14.2%</div>
+          <div className="kpi-trend risk-trend-down">▼ 2.3%</div>
+        </div>
+      </div>
+
+      {/* Country Risk */}
+      <div className="risk-section">
+        <h2>
+          {titles?.countryRiskBreakdown?.[locale] || 'Country Risk Breakdown'}
+        </h2>
+        <div className="country-selector">
+          {COUNTRIES.map(c => (
+            <button
+              key={c.key}
+              className={`country-btn ${selectedCountry === c.key ? 'active' : ''}`}
+              onClick={() => setSelectedCountry(c.key)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+        <div className="country-risk-card">
+          <div className="country-risk-header">
+            <span className="country-name">{countryRisk.label}</span>
+            <span className={`risk-badge risk-${countryRisk.risk}`}>
+              {countryRisk.risk === 'low' ? 'Low Risk' : countryRisk.risk === 'medium' ? 'Medium Risk' : 'High Risk'}
+            </span>
+          </div>
+          <div className="country-risk-metrics">
+            <div className="risk-metric">
+              <div className="risk-metric-label">Political Stability</div>
+              <div className="risk-metric-value">{countryRisk.risk === 'low' ? 'A' : countryRisk.risk === 'medium' ? 'B+' : 'C'}</div>
+            </div>
+            <div className="risk-metric">
+              <div className="risk-metric-label">Regulatory Environment</div>
+              <div className="risk-metric-value">{countryRisk.risk === 'low' ? 'Strong' : countryRisk.risk === 'medium' ? 'Moderate' : 'Weak'}</div>
+            </div>
+            <div className="risk-metric">
+              <div className="risk-metric-label">Economic Outlook</div>
+              <div className="risk-metric-value">{countryRisk.risk === 'low' ? 'Positive' : countryRisk.risk === 'medium' ? 'Neutral' : 'Negative'}</div>
+            </div>
+          </div>
+          <div className="country-risk-trend">
+            <span className="trend-label">Trend:</span>
+            <span className={`trend-change ${countryRiskTrend.direction}`}>
+              {countryRiskTrend.change}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Sector Breakdown */}
+      <div className="risk-section">
+        <h2>
+          {titles?.sectorBreakdown?.[locale] || 'Sector Breakdown'}
+        </h2>
+        <div className="sector-risk-list">
+          {sectorBreakdown.map(item => (
+            <div key={item.sector} className="sector-risk-item">
+              <div className="sector-risk-info">
+                <span className="sector-name">{item.sector}</span>
+                <span className={`risk-badge risk-${item.rating}`}>
+                  {item.rating === 'low' ? 'Low' : item.rating === 'medium' ? 'Medium' : 'High'}
                 </span>
-              )}
+              </div>
+              <div className="sector-risk-exposure">
+                <div className="exposure-bar">
+                  <div
+                    className="exposure-fill"
+                    style={{
+                      width: `${item.exposure}%`,
+                      background:
+                        item.rating === 'high' ? 'var(--danger)' :
+                        item.rating === 'medium' ? 'var(--warning)' :
+                        'var(--success)',
+                    }}
+                  />
+                </div>
+                <span className="exposure-value">{item.exposure}%</span>
+              </div>
             </div>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
-              {stat.value}
-            </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '4px' }}>
-              {stat.label}
-            </div>
-          </Card>
-        ))}
+          ))}
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-lg)', marginBottom: 'var(--spacing-lg)' }}>
-        {/* Portfolio Heatmap */}
-        <Card style={{ padding: 'var(--spacing-md)' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 'var(--spacing-md)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
-            <span style={{ fontSize: '16px' }}>🗺️</span>
-            {lang === 'ar' ? 'خريطة المحفظة الحرارية' : 'Portfolio Heatmap'}
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px', marginBottom: 'var(--spacing-md)' }}>
-            {Array.from({ length: 20 }, (_, i) => {
-              const risk = Math.random()
-              const color = risk < 0.6 ? 'var(--accent-emerald)' : risk < 0.8 ? 'var(--accent-amber)' : 'var(--accent-rose)'
-              const intensity = risk < 0.6 ? 0.3 : risk < 0.8 ? 0.6 : 1
-              return (
-                <div key={i} style={{ aspectRatio: '1', borderRadius: 'var(--radius-sm)', background: color, opacity: 0.2 + intensity * 0.8, transition: 'all 200ms ease' }} title={`Cell ${i + 1}`} />
-              )
-            })}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-md)', fontSize: '11px', color: 'var(--text-tertiary)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent-emerald)', opacity: 0.5 }} />{'✅ Low'}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent-amber)', opacity: 0.5 }} />{'⚠️ Medium'}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent-rose)', opacity: 0.5 }} />{'🔴 High'}</div>
-          </div>
-        </Card>
-
-        {/* Score Distribution */}
-        <Card style={{ padding: 'var(--spacing-md)' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 'var(--spacing-md)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
-            <span style={{ fontSize: '16px' }}>📊</span>
-            {lang === 'ar' ? 'توزيع التقييمات' : 'Score Distribution'}
-          </h3>
-          <ScoreDistribution scores={APPLICATIONS.map(a => a.score)} lang={lang} />
-        </Card>
+      {/* Exposure by Tenor */}
+      <div className="risk-section">
+        <h2>
+          {titles?.exposureByTenor?.[locale] || 'Exposure by Tenor'}
+        </h2>
+        <div className="tenor-exposure-list">
+          {exposureByTenor.map(item => (
+            <div key={item.tenor} className="tenor-item">
+              <div className="tenor-info">
+                <span className="tenor-label">{item.tenor}</span>
+                <span className={`risk-badge risk-${item.rating}`}>
+                  {item.rating === 'low' ? 'Low' : item.rating === 'medium' ? 'Medium' : 'High'}
+                </span>
+              </div>
+              <div className="tenor-exposure">
+                <div className="exposure-bar">
+                  <div
+                    className="exposure-fill"
+                    style={{
+                      width: `${item.exposure}%`,
+                      background:
+                        item.rating === 'high' ? 'var(--danger)' :
+                        item.rating === 'medium' ? 'var(--warning)' :
+                        'var(--success)',
+                    }}
+                  />
+                </div>
+                <span className="exposure-value">{item.exposure}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Delinquency trends + Sector breakdown */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-lg)' }}>
-        {/* Delinquency trends */}
-        <Card style={{ padding: 'var(--spacing-md)' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 'var(--spacing-md)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
-            <span style={{ fontSize: '16px' }}>📉</span>
-            {lang === 'ar' ? 'اتجاهات التخلف عن السداد' : 'Delinquency Trends'}
-          </h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-sm)', fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-          </div>
-          <MiniChart data={[3.2, 3.1, 3.0, 2.9, 2.6, 2.4]} color="var(--accent-emerald)" height={60} />
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--spacing-sm)', fontSize: '10px', color: 'var(--text-secondary)' }}>
-            <span>↓ Improving</span>
-            <span>{lang === 'ar' ? 'أقل من الربع السابق' : 'Down from last quarter'}</span>
-          </div>
-        </Card>
-
-        {/* Sector risk breakdown */}
-        <Card style={{ padding: 'var(--spacing-md)' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 'var(--spacing-md)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
-            <span style={{ fontSize: '16px' }}>🏢</span>
-            {lang === 'ar' ? 'تعرض القطاعات للمخاطر' : 'Sector Risk Exposure'}
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {sectorData.map((sector, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--spacing-sm)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', flex: 1 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: sector.color }} />
-                  <span style={{ fontSize: '12px', color: 'var(--text-primary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {sector.label}
-                  </span>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: sector.color }}>{sector.exposure}%</div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>
-                    {sector.risk === 'high' ? '🔴' : sector.risk === 'medium' ? '⚠️' : '✅'}
-                  </div>
-                </div>
+      {/* Portfolio Heatmap */}
+      <div className="risk-section">
+        <h2>
+          {titles?.portfolioHeatmap?.[locale] || 'Portfolio Heatmap'}
+        </h2>
+        <div className="heatmap-container">
+          <div className="heatmap-grid">
+            {sectorBreakdown.slice(0, 6).map(item => (
+              <div
+                key={item.sector}
+                className={`heatmap-cell risk-${item.rating}`}
+                style={{
+                  background:
+                    item.rating === 'high' ? 'var(--danger)' :
+                    item.rating === 'medium' ? 'var(--warning)' :
+                    'var(--success)',
+                  opacity: 0.3 + (item.exposure / 50),
+                }}
+                title={`${item.sector}: ${item.exposure}%`}
+              >
+                <span className="heatmap-label">{item.sector}</span>
+                <span className="heatmap-value">{item.exposure}%</span>
               </div>
             ))}
           </div>
-        </Card>
+          <div className="heatmap-legend">
+            <span className="legend-item legend-low">Low</span>
+            <span className="legend-item legend-medium">Medium</span>
+            <span className="legend-item legend-high">High</span>
+          </div>
+        </div>
       </div>
 
-      {/* Alerts summary */}
-      <Card style={{ padding: 'var(--spacing-md)', background: 'linear-gradient(135deg, rgba(244,63,94,0.05) 0%, transparent 100%)', border: '1px solid rgba(244,63,94,0.2)', borderRadius: 'var(--radius-lg)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--accent-rose)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
-            🚨
+      {/* Delinquency Trends */}
+      <div className="risk-section">
+        <h2>
+          {titles?.delinquencyTrending?.[locale] || 'Delinquency Trends'}
+        </h2>
+        <div className="delinquency-chart">
+          <div className="delinquency-bars">
+            {[
+              { month: 'Jan', value: 3.2 },
+              { month: 'Feb', value: 4.1 },
+              { month: 'Mar', value: 3.8 },
+              { month: 'Apr', value: 5.2 },
+              { month: 'May', value: 4.9 },
+              { month: 'Jun', value: 6.1 },
+              { month: 'Jul', value: 5.8 },
+              { month: 'Aug', value: 7.2 },
+              { month: 'Sep', value: 6.8 },
+              { month: 'Oct', value: 8.1 },
+              { month: 'Nov', value: 7.5 },
+              { month: 'Dec', value: 9.2 },
+            ].map((item, index) => (
+              <div key={index} className="delinquency-bar">
+                <div
+                  className="delinquency-fill"
+                  style={{
+                    height: `${item.value * 8}px`,
+                    background:
+                      item.value > 7 ? 'var(--danger)' :
+                      item.value > 5 ? 'var(--warning)' :
+                      'var(--success)',
+                  }}
+                />
+                <span className="delinquency-value">{item.value}%</span>
+              </div>
+            ))}
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
-              {lang === 'ar' ? 'تنبيهات نشطة تحتاج انتباهاً' : 'Active alerts requiring attention'}
-            </div>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: 2 }}>
-              {lang === 'ar' ? '2 تنبيهات حرجة تحتاج مراجعة فورية' : '2 critical alerts need immediate review'}
-            </div>
+          <div className="delinquency-labels">
+            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, index) => (
+              <span key={index} className="delinquency-label">{m}</span>
+            ))}
           </div>
-          <Badge variant="danger">2 Critical</Badge>
         </div>
-      </Card>
+      </div>
     </div>
   )
 }
