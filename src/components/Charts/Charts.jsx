@@ -154,8 +154,6 @@ export function MiniChart({ data, color = 'var(--accent-cyan)', height = 32 }) {
 }
 
 // === Score Distribution Histogram ===
-const BIN_LABELS = Array.from({ length: 10 }, (_, i) => `${i * 100}-${(i + 1) * 100}`)
-
 export function ScoreDistribution({ scores, bins = 10 }) {
   const counts = scores.reduce((acc, s) => {
     const bin = Math.min(bins - 1, Math.max(0, Math.floor(s / 100)))
@@ -170,7 +168,7 @@ export function ScoreDistribution({ scores, bins = 10 }) {
       {counts.map((c, index) => (
         <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', width: '36px', textAlign: 'right' }}>
-            {BIN_LABELS[index] || `${index * 100}`}
+            {index * 100}-{(index + 1) * 100}
           </span>
           <div
             style={{
@@ -209,7 +207,6 @@ export function GaugeChart({ value = 0, max = 1000, label, color = 'var(--accent
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
       <svg width={size} height={size / 2 + 10} style={{ overflow: 'visible' }}>
-        {/* Background arc */}
         <path
           d={`M 10 ${(size / 2 + 10) - radius} A ${radius} ${radius} 0 0 1 ${size - 10} ${(size / 2 + 10) - radius}`}
           fill="none"
@@ -217,7 +214,6 @@ export function GaugeChart({ value = 0, max = 1000, label, color = 'var(--accent
           strokeWidth="8"
           strokeLinecap="round"
         />
-        {/* Value arc */}
         <path
           d={`M 10 ${(size / 2 + 10) - radius} A ${radius} ${radius} 0 0 1 ${size - 10} ${(size / 2 + 10) - radius}`}
           fill="none"
@@ -242,7 +238,6 @@ export function GaugeChart({ value = 0, max = 1000, label, color = 'var(--accent
   )
 }
 
-// === Correlation Matrix Heatmap ===
 const CORR_LABELS = [
   'DSR',
   'LTV',
@@ -254,6 +249,7 @@ const CORR_LABELS = [
   'CountryRisk',
 ]
 
+// === Correlation Matrix Heatmap ===
 export function CorrelationMatrix({ data, size = 280 }) {
   const matrixData = data?.length
     ? data.map((row) =>
@@ -271,10 +267,16 @@ export function CorrelationMatrix({ data, size = 280 }) {
             ? 'var(--accent-orange)'
             : 'var(--border)'
           const textColor = abs > 0.5 ? 'white' : 'var(--text-secondary)'
-          return { row: CORR_LABELS[ri], col: CORR_LABELS[ci], value: num, color, textColor }
+          return {
+            row,
+            col: CORR_LABELS[ci],
+            value: num,
+            color,
+            textColor,
+          }
         })
       )
-    : CORR_LABELS.map((label, ri) =>
+    : CORR_LABELS.map((label) =>
         CORR_LABELS.map((_, ci) => ({
           row: label,
           col: CORR_LABELS[ci],
@@ -288,7 +290,6 @@ export function CorrelationMatrix({ data, size = 280 }) {
 
   return (
     <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'flex-start' }}>
-      {/* Column headers */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         <div style={{ height: cellSize, width: '60px' }} />
         {CORR_LABELS.map(label => (
@@ -311,10 +312,9 @@ export function CorrelationMatrix({ data, size = 280 }) {
           </div>
         ))}
       </div>
-      {/* Matrix */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-        {matrixData.map((row, ri) => (
-          <div key={row[0]?.row || Math.random()} style={{ display: 'flex', gap: '2px' }}>
+        {matrixData.map((row) => (
+          <div key={row.row} style={{ display: 'flex', gap: '2px' }}>
             <div
               style={{
                 width: '60px',
@@ -328,7 +328,7 @@ export function CorrelationMatrix({ data, size = 280 }) {
                 fontWeight: 600,
               }}
             >
-              {row[0]?.row}
+              {typeof row.row === 'string' ? row.row : CORR_LABELS.find(l => l === row.row)?.toString() || 'N/A'}
             </div>
             {row.map((cell, ci) => (
               <div
@@ -367,10 +367,7 @@ export function DonutChart({ data, colors, size = 140, centerLabel, centerValue 
 
   const segments = data.map((item, idx) => {
     const percent = item.value / total
-    // Compute start angle from previous segments (pure, no mutation)
-    const startAngle = data.slice(0, idx).reduce((acc, prev) => {
-      return acc + (prev.value / total) * 360
-    }, 0)
+    const startAngle = data.slice(0, idx).reduce((acc, prev) => acc + (prev.value / total) * 360, 0)
     const strokeDasharray = `${circumference * percent} ${circumference * (1 - percent)}`
     const rotation = -90 + startAngle
     return {
@@ -383,14 +380,7 @@ export function DonutChart({ data, colors, size = 140, centerLabel, centerValue 
   })
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 'var(--spacing-md)',
-      }}
-    >
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-md)' }}>
       <svg width={size} height={size}>
         {segments.map((seg, idx) => (
           <circle
@@ -421,5 +411,4 @@ export function DonutChart({ data, colors, size = 140, centerLabel, centerValue 
   )
 }
 
-// === WaterfallChart (re-export from local file) ===
 export { WaterfallChart }
