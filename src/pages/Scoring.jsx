@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import data from '../lib/data'
+import appData from '../lib/data'
 
 export function Scoring({ titles, locale }) {
   const [selectedApp, setSelectedApp] = useState(null)
@@ -19,10 +19,9 @@ export function Scoring({ titles, locale }) {
   return (
     <div className="scoring-page">
       <h1>{titles?.scoring?.[locale] || 'Credit Scoring'}</h1>
-
       <h2>Select Application</h2>
       <div className="app-selector">
-        {data.applications?.map(app => (
+        {appData.applications?.map(app => (
           <div
             key={app.id}
             className={`app-option ${selectedApp?.id === app.id ? 'selected' : ''}`}
@@ -39,7 +38,6 @@ export function Scoring({ titles, locale }) {
           </div>
         ))}
       </div>
-
       {selectedApp && (
         <div className="scoring-detail">
           <h2>
@@ -102,7 +100,6 @@ export function Scoring({ titles, locale }) {
               <span className="waterfall-value total">500</span>
             </div>
           </div>
-
           <h2>Scenario Simulation</h2>
           <div className="simulator">
             <div className="sim-sliders">
@@ -114,66 +111,40 @@ export function Scoring({ titles, locale }) {
                   max="1"
                   step="0.01"
                   value={sliderValues.dsr}
-                  onChange={e =>
-                    handleSliderChange(
-                      'dsr',
-                      parseFloat(e.target.value),
-                    )
-                  }
+                  onChange={e => handleSliderChange('dsr', parseFloat(e.target.value))}
                 />
               </div>
               <div className="sim-slider-group">
-                <label>
-                  Cashflow: {sliderValues.cashflowConsistency.toFixed(2)}
-                </label>
+                <label>Cashflow: {sliderValues.cashflowConsistency.toFixed(2)}</label>
                 <input
                   type="range"
                   min="0"
                   max="1"
                   step="0.01"
                   value={sliderValues.cashflowConsistency}
-                  onChange={e =>
-                    handleSliderChange(
-                      'cashflowConsistency',
-                      parseFloat(e.target.value),
-                    )
-                  }
+                  onChange={e => handleSliderChange('cashflowConsistency', parseFloat(e.target.value))}
                 />
               </div>
               <div className="sim-slider-group">
-                <label>
-                  Debt Burden: {sliderValues.existingDebtBurden.toFixed(2)}
-                </label>
+                <label>Debt Burden: {sliderValues.existingDebtBurden.toFixed(2)}</label>
                 <input
                   type="range"
                   min="0"
                   max="1"
                   step="0.01"
                   value={sliderValues.existingDebtBurden}
-                  onChange={e =>
-                    handleSliderChange(
-                      'existingDebtBurden',
-                      parseFloat(e.target.value),
-                    )
-                  }
+                  onChange={e => handleSliderChange('existingDebtBurden', parseFloat(e.target.value))}
                 />
               </div>
               <div className="sim-slider-group">
-                <label>
-                  Employment: {sliderValues.employmentStability.toFixed(2)}
-                </label>
+                <label>Employment: {sliderValues.employmentStability.toFixed(2)}</label>
                 <input
                   type="range"
                   min="0"
                   max="1"
                   step="0.01"
                   value={sliderValues.employmentStability}
-                  onChange={e =>
-                    handleSliderChange(
-                      'employmentStability',
-                      parseFloat(e.target.value),
-                    )
-                  }
+                  onChange={e => handleSliderChange('employmentStability', parseFloat(e.target.value))}
                 />
               </div>
               <div className="sim-slider-group">
@@ -184,12 +155,7 @@ export function Scoring({ titles, locale }) {
                   max="1"
                   step="0.01"
                   value={sliderValues.fraudRisk}
-                  onChange={e =>
-                    handleSliderChange(
-                      'fraudRisk',
-                      parseFloat(e.target.value),
-                    )
-                  }
+                  onChange={e => handleSliderChange('fraudRisk', parseFloat(e.target.value))}
                 />
               </div>
               <div className="sim-slider-group">
@@ -200,12 +166,7 @@ export function Scoring({ titles, locale }) {
                   max="900"
                   step="1"
                   value={sliderValues.bureauScore}
-                  onChange={e =>
-                    handleSliderChange(
-                      'bureauScore',
-                      parseInt(e.target.value, 10),
-                    )
-                  }
+                  onChange={e => handleSliderChange('bureauScore', parseInt(e.target.value, 10))}
                 />
               </div>
             </div>
