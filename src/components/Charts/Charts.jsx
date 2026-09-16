@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React from 'react'
 import { ScoreMeter } from '../ScoreBoard/ScoreMeter'
 import { WaterfallChart } from './WaterfallChart'
 
@@ -154,15 +154,14 @@ export function MiniChart({ data, color = 'var(--accent-cyan)', height = 32 }) {
 }
 
 // === Score Distribution Histogram ===
+const BIN_LABELS = Array.from({ length: 10 }, (_, i) => `${i * 100}-${(i + 1) * 100}`)
+
 export function ScoreDistribution({ scores, bins = 10 }) {
-  const counts = useMemo(() => {
-    const result = new Array(bins).fill(0)
-    for (const s of scores) {
-      const bin = Math.min(bins - 1, Math.max(0, Math.floor(s / 100)))
-      result[bin]++
-    }
-    return result
-  }, [scores, bins])
+  const counts = scores.reduce((acc, s) => {
+    const bin = Math.min(bins - 1, Math.max(0, Math.floor(s / 100)))
+    acc[bin] = (acc[bin] || 0) + 1
+    return acc
+  }, new Array(bins).fill(0))
 
   const maxCount = Math.max(...counts, 1)
 
@@ -171,7 +170,7 @@ export function ScoreDistribution({ scores, bins = 10 }) {
       {counts.map((c, index) => (
         <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <span style={{ fontSize: '10px', color: 'var(--text-tertiary)', width: '36px', textAlign: 'right' }}>
-            {index * 100}-{(index + 1) * 100}
+            {BIN_LABELS[index] || `${index * 100}`}
           </span>
           <div
             style={{
@@ -256,35 +255,34 @@ const CORR_LABELS = [
 ]
 
 export function CorrelationMatrix({ data, size = 280 }) {
-  const matrixData = useMemo(() => {
-    if (!data || data.length === 0) {
-      return CORR_LABELS.map((_, ri) => CORR_LABELS.map((_, ci) => ({
-        row: CORR_LABELS[ri],
-        col: CORR_LABELS[ci],
-        value: 0,
-        color: 'var(--border)',
-        textColor: 'var(--text-tertiary)',
-      })))
-    }
-    return data.map((row, ri) =>
-      CORR_LABELS.map((_, ci) => {
-        const v = typeof row === 'object' && row[ci] !== undefined ? row[ci] : (ci === 0 ? row[0]?.toString() : 0)
-        const num = typeof v === 'number' ? v : 0
-        const abs = Math.abs(num)
-        const color = num > 0.5
-          ? 'var(--accent-emerald)'
-          : num > 0.2
-          ? 'var(--accent-amber)'
-          : num < -0.5
-          ? 'var(--accent-rose)'
-          : num < -0.2
-          ? 'var(--accent-orange)'
-          : 'var(--border)'
-        const textColor = abs > 0.5 ? 'white' : 'var(--text-secondary)'
-        return { row: CORR_LABELS[ri], col: CORR_LABELS[ci], value: num, color, textColor }
-      })
-    )
-  }, [data])
+  const matrixData = data?.length
+    ? data.map((row) =>
+        CORR_LABELS.map((_, ci) => {
+          const v = typeof row === 'object' && row[ci] !== undefined ? row[ci] : (ci === 0 ? row[0]?.toString() : 0)
+          const num = typeof v === 'number' ? v : 0
+          const abs = Math.abs(num)
+          const color = num > 0.5
+            ? 'var(--accent-emerald)'
+            : num > 0.2
+            ? 'var(--accent-amber)'
+            : num < -0.5
+            ? 'var(--accent-rose)'
+            : num < -0.2
+            ? 'var(--accent-orange)'
+            : 'var(--border)'
+          const textColor = abs > 0.5 ? 'white' : 'var(--text-secondary)'
+          return { row: CORR_LABELS[ri], col: CORR_LABELS[ci], value: num, color, textColor }
+        })
+      )
+    : CORR_LABELS.map((label, ri) =>
+        CORR_LABELS.map((_, ci) => ({
+          row: label,
+          col: CORR_LABELS[ci],
+          value: 0,
+          color: 'var(--border)',
+          textColor: 'var(--text-tertiary)',
+        }))
+      )
 
   const cellSize = size / CORR_LABELS.length
 
@@ -294,7 +292,21 @@ export function CorrelationMatrix({ data, size = 280 }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         <div style={{ height: cellSize, width: '60px' }} />
         {CORR_LABELS.map(label => (
-          <div key={label} style={{ height: cellSize, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '4px', fontSize: '9px', color: 'var(--text-tertiary)', fontWeight: 600, transform: 'rotate(-45deg)', transformOrigin: 'right center' }}>
+          <div
+            key={label}
+            style={{
+              height: cellSize,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              paddingRight: '4px',
+              fontSize: '9px',
+              color: 'var(--text-tertiary)',
+              fontWeight: 600,
+              transform: 'rotate(-45deg)',
+              transformOrigin: 'right center',
+            }}
+          >
             {label}
           </div>
         ))}
@@ -302,8 +314,20 @@ export function CorrelationMatrix({ data, size = 280 }) {
       {/* Matrix */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {matrixData.map((row, ri) => (
-          <div key={ri} style={{ display: 'flex', gap: '2px' }}>
-            <div style={{ width: '60px', height: cellSize, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '4px', fontSize: '9px', color: 'var(--text-tertiary)', fontWeight: 600 }}>
+          <div key={row[0]?.row || Math.random()} style={{ display: 'flex', gap: '2px' }}>
+            <div
+              style={{
+                width: '60px',
+                height: cellSize,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingRight: '4px',
+                fontSize: '9px',
+                color: 'var(--text-tertiary)',
+                fontWeight: 600,
+              }}
+            >
               {row[0]?.row}
             </div>
             {row.map((cell, ci) => (
@@ -341,21 +365,21 @@ export function DonutChart({ data, colors, size = 140, centerLabel, centerValue 
   const radius = size / 2 - 10
   const circumference = 2 * Math.PI * radius
 
-  let currentAngle = 0
   const segments = data.map((item, idx) => {
     const percent = item.value / total
-    const endAngle = currentAngle + percent * 360
+    // Compute start angle from previous segments (pure, no mutation)
+    const startAngle = data.slice(0, idx).reduce((acc, prev) => {
+      return acc + (prev.value / total) * 360
+    }, 0)
     const strokeDasharray = `${circumference * percent} ${circumference * (1 - percent)}`
-    const rotation = -90 + currentAngle
-    const result = {
+    const rotation = -90 + startAngle
+    return {
       ...item,
       percent,
       strokeDasharray,
       rotation,
       color: colors?.[idx % (colors?.length || 1)] || 'var(--accent-indigo)',
     }
-    currentAngle = endAngle
-    return result
   })
 
   return (
