@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react'
-import appData from '../lib/data'
 
 const COUNTRIES = [
   { key: 'AE', label: 'UAE', risk: 'low' },
