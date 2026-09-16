@@ -39,7 +39,7 @@ export const i18nEn = {
   close: 'Close',
   applicant: 'Applicant',
   amount: 'Amount',
-  risk: 'Risk',
+  risk2: 'Risk',
   status: 'Status',
   assignee: 'Assignee',
   actions: 'Actions',
