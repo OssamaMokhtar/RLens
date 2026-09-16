@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from 'react'
+import React from 'react'
 import { Modal } from '../components/Shared/Modal'
 import appData from '../lib/data'
 
 export function Dashboard({ titles, locale }) {
   const activity = appData.activityFeed?.slice(0, 12) || []
-  const insights = appData.insights?.slice(0, 5) || []
 
   return (
     <div className="dashboard-page">
