@@ -1,7 +1,7 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React from 'react'
 import { usePulse } from '../hooks/usePulse'
 
-const NavItem = ({ icon, label, labelAr, active, onClick, badge }) => (
+const NavItem = ({ icon, label, active, onClick, badge }) => (
   <button
     className={`nav-item ${active ? 'active' : ''}`}
     onClick={onClick}
@@ -9,9 +9,18 @@ const NavItem = ({ icon, label, labelAr, active, onClick, badge }) => (
   >
     <span className="nav-icon">{icon}</span>
     <span className="nav-label">{label}</span>
-    {badge && <span className="nav-badge">{badge}</span>}
+    {badge !== null && badge !== undefined && <span className="nav-badge">{badge}</span>}
   </button>
 )
+
+function SidebarStatus({ lang }) {
+  return (
+    <div className="sidebar-status">
+      <span className="status-dot" />
+      <span className={lang === 'ar' ? 'فعال' : 'Active'} />
+    </div>
+  )
+}
 
 const Sidebar = ({ lang, currentPage, onNavigate, alertsCount }) => {
   const pages = [
@@ -30,12 +39,12 @@ const Sidebar = ({ lang, currentPage, onNavigate, alertsCount }) => {
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-            <rect width="40" height="40" rx="10" fill="url(#logoGrad)"/>
-            <path d="M12 28V12l16 8-16 8z" fill="white"/>
+            <rect width="40" height="40" rx="10" fill="url(#logoGrad)" />
+            <path d="M12 28V12l16 8-16 8z" fill="white" />
             <defs>
               <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/>
-                <stop offset="1" stopColor="#4f46e5"/>
+                <stop stopColor="#6366f1" />
+                <stop offset="1" stopColor="#4f46e5" />
               </linearGradient>
             </defs>
           </svg>
@@ -51,16 +60,13 @@ const Sidebar = ({ lang, currentPage, onNavigate, alertsCount }) => {
             label={page.label}
             active={currentPage === page.key}
             onClick={() => onNavigate(page.key)}
-            badge={page.key === 'applications' ? alertsCount : null}
+            badge={page.key === 'applications' ? (alertsCount ?? null) : page.badge}
           />
         ))}
       </nav>
 
       <div className="sidebar-footer">
-        <div className="sidebar-status">
-          <span className="status-dot" />
-          <span className={lang === 'ar' ? 'فعال' : 'Active'}</span>
-        </div>
+        <SidebarStatus lang={lang} />
       </div>
     </aside>
   )
@@ -71,9 +77,13 @@ const TopBar = ({ lang, theme, toggleTheme, toggleLang, user, onLogout }) => (
     <div className="topbar-left">
       <div className="topbar-search">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
         </svg>
-        <input type="text" placeholder={lang === 'ar' ? 'البحث...' : 'Search applications...'} className="search-input" />
+        <input
+          type="text"
+          placeholder={lang === 'ar' ? 'البحث...' : 'Search applications...'}
+          className="search-input"
+        />
       </div>
     </div>
 
@@ -87,7 +97,7 @@ const TopBar = ({ lang, theme, toggleTheme, toggleLang, user, onLogout }) => (
       <div className="topbar-user">
         <div className="user-avatar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 1-16 0a8 8 0 0 1 16 0"/>
+            <circle cx="12" cy="8" r="4" /><path d="M20 21a8 8 0 1 1-16 0a8 8 0 0 1 16 0" />
           </svg>
         </div>
         <div className="user-info">
@@ -96,7 +106,7 @@ const TopBar = ({ lang, theme, toggleTheme, toggleLang, user, onLogout }) => (
         </div>
         <button className="user-logout" onClick={onLogout} title={lang === 'ar' ? 'تسجيل الخروج' : 'Sign out'}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
           </svg>
         </button>
       </div>
