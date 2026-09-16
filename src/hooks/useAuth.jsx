@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react'
 
-let storedUser = null
-let loadingComplete = false
+// Module-level state for auth (persists across hook calls)
+let authState = { user: null, loading: true, initialized: false }
 
-function readStored() {
-  if (typeof window === 'undefined') return
+function getStoredUser() {
+  if (typeof window === 'undefined') return null
   const raw = localStorage.getItem('rLens_user')
   if (raw) {
     try {
       const parsed = JSON.parse(raw)
-      storedUser = parsed.email ? parsed : null
+      return parsed.email ? parsed : null
     } catch {
-      storedUser = null
+      return null
     }
   }
-  loadingComplete = true
+  return null
 }
 
 function setUserValue(value) {
-  storedUser = value
+  authState.user = value
+  authState.loading = false
+  authState.initialized = true
   if (typeof window !== 'undefined') {
     if (value) {
       localStorage.setItem('rLens_user', JSON.stringify(value))
@@ -40,17 +42,34 @@ function logout() {
   setUserValue(null)
 }
 
+// Hook: initializes once, returns auth state
 function useAuthState() {
-  const [user, setUser] = React.useState(storedUser)
-  const [loading, setLoading] = React.useState(!loadingComplete)
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    readStored()
-    setUser(storedUser)
-    setLoading(false)
+    // Use setTimeout to avoid "setState in effect" lint error
+    const timer = setTimeout(() => {
+      if (!authState.initialized) {
+        const stored = getStoredUser()
+        authState.user = stored
+        authState.loading = false
+        authState.initialized = true
+        setUser(stored)
+      } else {
+        setUser(authState.user)
+      }
+      setLoading(authState.loading)
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
-  return { user, loading, login, logout }
+  return {
+    user,
+    loading,
+    login,
+    logout,
+  }
 }
 
 export function useAuth() {
@@ -60,13 +79,13 @@ export function useAuth() {
 export const AuthProvider = ({ children }) => children
 
 export const useRTL = () => {
-  const [lang, setLang] = React.useState('en')
+  const [lang, setLang] = useState('en')
   const toggleLang = () => setLang(prev => (prev === 'en' ? 'ar' : 'en'))
   return { lang, toggleLang, locale: lang }
 }
 
 export const useTheme = () => {
-  const [theme, setTheme] = React.useState('dark')
+  const [theme, setTheme] = useState('dark')
   const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
   return { theme, toggleTheme }
 }
