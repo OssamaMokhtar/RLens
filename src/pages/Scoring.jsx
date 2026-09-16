@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import data from '../lib/data'
 
 export function Scoring({ titles, locale }) {
   const [selectedApp, setSelectedApp] = useState(null)
@@ -21,7 +22,7 @@ export function Scoring({ titles, locale }) {
 
       <h2>Select Application</h2>
       <div className="app-selector">
-        {appData.applications?.map(app => (
+        {data.applications?.map(app => (
           <div
             key={app.id}
             className={`app-option ${selectedApp?.id === app.id ? 'selected' : ''}`}
@@ -76,9 +77,9 @@ export function Scoring({ titles, locale }) {
                 value: (sliderValues.bureauScore - 500) / 3,
                 direction: 'positive',
               },
-            ].map((factor, index) => (
+            ].map((factor) => (
               <div
-                key={index}
+                key={factor.label}
                 className={`waterfall-bar ${factor.direction}`}
               >
                 <div className="waterfall-label">{factor.label}</div>
