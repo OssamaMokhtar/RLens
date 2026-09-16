@@ -1,24 +1,20 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 
-let authState = { user: null, loading: true, ready: false }
-
-function readStored() {
-  if (typeof window === 'undefined') return
+function getStoredUser() {
+  if (typeof window === 'undefined') return null
   const raw = localStorage.getItem('rLens_user')
   if (raw) {
     try {
       const parsed = JSON.parse(raw)
-      authState.user = parsed.email ? parsed : null
+      return parsed.email ? parsed : null
     } catch {
-      authState.user = null
+      return null
     }
   }
-  authState.loading = false
-  authState.ready = true
+  return null
 }
 
-function setUser(value) {
-  authState.user = value
+function saveUser(value) {
   if (typeof window !== 'undefined') {
     if (value) {
       localStorage.setItem('rLens_user', JSON.stringify(value))
@@ -29,41 +25,26 @@ function setUser(value) {
 }
 
 export function useAuth() {
-  // Initialize from localStorage once
-  if (!authState.ready) {
-    readStored()
-  }
-  
-  const [user, setUserState] = React.useState(authState.user)
-  const [loading, setLoading] = React.useState(authState.loading)
+  const [user, setUser] = useState(() => getStoredUser())
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('rLens_user') === null
+    }
+    return true
+  })
 
-  React.useEffect(() => {
-    setUserState(authState.user)
-    setLoading(authState.loading)
-  }, [authState.ready])
-
-  const login = () => {
+  const login = useCallback(() => {
     const demo = { email: 'admin@rLens.ai', name: 'Ossama Admin', role: 'Admin' }
+    saveUser(demo)
     setUser(demo)
-    authState.user = demo
-    authState.loading = false
-    authState.ready = true
-    setUserState(demo)
     setLoading(false)
-  }
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
+    saveUser(null)
     setUser(null)
-    authState.user = null
-    authState.loading = false
-    authState.ready = true
-    setUserState(null)
     setLoading(false)
-  }
+  }, [])
 
   return { user, loading, login, logout }
 }
-
-export const AuthProvider = ({ children }) => children
-export { useRTL } from './useRTL'
-export { useTheme } from './useTheme'
