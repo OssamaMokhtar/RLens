@@ -1,5 +1,7 @@
 # GCC AI Credit Platform — Bilingual Tone Pack & Localization Rules
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 This document outlines the authoritative bilingual tone dictionary and cultural formatting rules for the GCC AI Credit Scoring & Risk Platform. 
 
 ## 1. Cultural Sensitivity Rules

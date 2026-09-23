@@ -1,5 +1,7 @@
 # User Journeys & UI Wireframes
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 ## 1. Retail Loan Application Journey
 
 ```

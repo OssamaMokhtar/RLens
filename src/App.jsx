@@ -1,17 +1,31 @@
-import React from 'react'
-import { useAuth, AuthProvider } from './hooks/useAuth'
+import React, { useState } from 'react'
+import { useAuth } from './hooks/useAuth'
 import { useRTL } from './hooks/useRTL'
 import { useTheme } from './hooks/useTheme'
 import { Layout } from './components/Layout/Layout'
-import Dashboard from './pages/Dashboard'
-import Applications from './pages/Applications'
-import Scoring from './pages/Scoring'
-import SMELending from './pages/SME'
-import RiskAnalytics from './pages/RiskAnalytics'
-import FraudAML from './pages/FraudAML'
-import CopilotPage from './pages/CopilotPage'
-import RegulationsRAG from './pages/RegulationsRAG'
-import Profile from './pages/Profile'
+import { PulseProvider } from './components/PulseProvider'
+import { Dashboard } from './pages/Dashboard'
+import { Applications } from './pages/Applications'
+import { Scoring } from './pages/Scoring'
+import { SMELending } from './pages/SME'
+import { RiskAnalytics } from './pages/RiskAnalytics'
+import { FraudAML } from './pages/FraudAML'
+import { CopilotPage } from './pages/CopilotPage'
+import { RegulationsRAG } from './pages/RegulationsRAG'
+import { Profile } from './pages/Profile'
+
+// Pages export named components; the old default imports broke the build.
+const PAGES = {
+  dashboard: Dashboard,
+  applications: Applications,
+  scoring: Scoring,
+  sme: SMELending,
+  risk: RiskAnalytics,
+  fraud: FraudAML,
+  copilot: CopilotPage,
+  regulations: RegulationsRAG,
+  profile: Profile,
+}
 
 const PAGE_TITLES = {
   dashboard: { en: 'Dashboard', ar: 'لوحة المعلومات' },
@@ -96,7 +110,9 @@ function AppRoutes() {
   const { user, loading, login, logout } = useAuth()
   const { lang, toggleLang } = useRTL()
   const { theme, toggleTheme } = useTheme()
+  const [page, setPage] = useState('dashboard')
   const locale = lang
+  const Page = PAGES[page] || Dashboard
 
   if (loading) {
     return <LoadingScreen locale={locale} theme={theme} />
@@ -112,18 +128,22 @@ function AppRoutes() {
         lang={lang}
         theme={theme}
         user={user}
-        currentPage="dashboard"
-        onNavigate={() => {}}
+        currentPage={page}
+        onNavigate={setPage}
         onToggleLang={toggleLang}
         onToggleTheme={toggleTheme}
         onLogout={logout}
       >
-        <Dashboard titles={PAGE_TITLES} locale={locale} />
+        <Page titles={PAGE_TITLES} locale={locale} />
       </Layout>
     </div>
   )
 }
 
 export default function App() {
-  return <AppRoutes />
+  return (
+    <PulseProvider>
+      <AppRoutes />
+    </PulseProvider>
+  )
 }

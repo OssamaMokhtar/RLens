@@ -26,12 +26,10 @@ function saveUser(value) {
 
 export function useAuth() {
   const [user, setUser] = useState(() => getStoredUser())
-  const [loading, setLoading] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('rLens_user') === null
-    }
-    return true
-  })
+  // Reading localStorage is synchronous, so there is nothing to wait for. The
+  // old initial value was true whenever no user was stored, which left a
+  // first-time visitor on the loading screen forever.
+  const [loading, setLoading] = useState(false)
 
   const login = useCallback(() => {
     const demo = { email: 'admin@rLens.ai', name: 'Ossama Admin', role: 'Admin' }

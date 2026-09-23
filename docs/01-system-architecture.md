@@ -1,5 +1,7 @@
 # AI Credit Scoring & Risk Platform — System Architecture
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 ## 1. High-Level Architecture Overview
 
 ```
