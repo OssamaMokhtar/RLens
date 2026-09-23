@@ -1,5 +1,5 @@
 import React from 'react'
-import { usePulse } from '../hooks/usePulse'
+import { usePulse } from '../../hooks/usePulse'
 
 const NavItem = ({ icon, label, active, onClick, badge }) => (
   <button

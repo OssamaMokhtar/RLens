@@ -1,4 +1,6 @@
-# RiskLens — AI Credit Scoring & Risk Platform for GCC Lending
+# RLens — AI Credit Scoring & Risk Platform for GCC Lending
+
+> **Reference architecture with a clickable UI prototype.** No trained models, no live bureau or open-banking data, no users. Every number in the UI is sample data. Earlier names: RiskFree, RiskLens.
 
 > Retail and SME credit decisioning with explainable scoring, AML/fraud screening, and an LLM copilot over regulatory policy — designed for Arabic/English markets.
 
@@ -10,7 +12,7 @@
 
 Conventional credit scoring in the GCC leaves large segments effectively invisible: expatriate workers with short local credit histories, SMEs whose cash flow lives outside formal reporting, and first-time borrowers with no bureau file at all. Lenders respond by either rejecting them or pricing in blanket risk — losing viable customers and mispricing the ones they keep.
 
-RiskLens is a product architecture for scoring those borrowers using alternative signals (open banking, telecom, utility) while staying explainable enough to defend to a regulator and a rejected applicant.
+RLens is a product architecture for scoring those borrowers using alternative signals (open banking, telecom, utility) while staying explainable enough to defend to a regulator and a rejected applicant.
 
 ## What it does
 
@@ -48,14 +50,31 @@ The substance of this project is the product and architecture thinking. Start he
 
 | Path | Status |
 |---|---|
-| `frontend-app/` | **Canonical UI** — Vite + React application |
+| `src/`, `index.html` | **The app**: Vite + React 19, AR/EN with RTL, 9 screens (dashboard, applications, scoring, SME, risk, fraud/AML, copilot, regulations, profile) on sample data |
 | `database/schema.sql` | Core relational schema |
-| `docs/` | Product & architecture documentation |
-| `react-ui/`, `ui-kit/`, root `index.html` | Earlier design explorations — kept for reference, not the current app |
+| `docs/` | Product and architecture documentation (the substance of this project) |
+| `frontend-app/`, `react-ui/`, `ui-kit/` | Earlier design explorations, kept for reference, not built |
+
+## Run
+
+```bash
+npm install
+npm run dev        # http://localhost:3000 — sign in with the prefilled demo account
+npm run build
+```
+
+Demo: `https://ossamamokhtar.github.io/RLens/` once GitHub Pages is enabled (Settings → Pages → Source: GitHub Actions); `.github/workflows/pages.yml` deploys on every push to `main`.
 
 ## Status
 
-**Prototype / reference architecture.** This is a designed and documented system with a working front-end prototype — not a production deployment. The scoring models are specified rather than trained on live bureau data.
+**Prototype / reference architecture.** The UI runs on sample data; the scoring models, AML screening and copilot are specified in `docs/`, not built.
+
+What a real build needs first, in order:
+1. A lender partner and a data-sharing agreement. Without real labelled outcomes there is nothing to train or validate on.
+2. A fairness plan before any model. Telecom and utility signals can act as proxies for nationality, which is a disparate-impact risk for expatriate borrowers.
+3. A mapping of CBUAE and SAMA model-risk and consumer-protection rules to the explainability design.
+
+**Fixed in the 23 Sep 2026 audit:** `main` did not build (a wrong import path in the entry file and in `Layout.jsx`, default imports of named page exports, a missing context provider). A first-time visitor was stuck on the loading screen, because `loading` started as `true` whenever no user was stored. Navigation was hard-wired to the dashboard, and the stylesheets were never imported.
 
 ## License
 

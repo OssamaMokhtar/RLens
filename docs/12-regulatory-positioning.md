@@ -4,7 +4,7 @@
 
 ## Product Classification Question
 
-Is RiskLens a **regulated credit decisioning system** (requiring CBUAE/SAMA approval) or a **decision-support tool** (lower regulatory bar)?
+Is RLens a **regulated credit decisioning system** (requiring CBUAE/SAMA approval) or a **decision-support tool** (lower regulatory bar)?
 
 This is the fundamental regulatory question that determines everything: what we can say, what we can build, what we can deploy, and what approvals we need.
 
@@ -12,7 +12,7 @@ This is the fundamental regulatory question that determines everything: what we 
 
 ### Option A: Regulated Credit Decisioning System
 
-If RiskLens makes automated credit decisions that lenders rely on, it may be classified as a regulated credit decisioning system. This would require:
+If RLens makes automated credit decisions that lenders rely on, it may be classified as a regulated credit decisioning system. This would require:
 
 - CBUAE (UAE central bank) approval for lending technology
 - SAMA (Saudi central bank) approval for Saudi market
@@ -25,10 +25,10 @@ If RiskLens makes automated credit decisions that lenders rely on, it may be cla
 
 ### Option B: Decision-Support Tool
 
-If RiskLens positions as a tool that *supports* human credit decisions (not replaces them), the regulatory bar may be lower:
+If RLens positions as a tool that *supports* human credit decisions (not replaces them), the regulatory bar may be lower:
 
 - The credit officer makes the final decision
-- RiskLens provides scoring, factor attribution, and recommendations
+- RLens provides scoring, factor attribution, and recommendations
 - The tool is positioned as "decision intelligence" not "automated decisioning"
 - Regulatory requirements may be lighter, but not zero
 
