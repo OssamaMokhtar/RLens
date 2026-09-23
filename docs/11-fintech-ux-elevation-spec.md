@@ -1,5 +1,7 @@
 # GCC AI Credit Platform: World-Class UX Elevation Specification
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 This document defines the technical and visual standards for the “World-Class” version of the platform. It serves as the master blueprint for designers, engineers, and motion specialists.
 
 ---

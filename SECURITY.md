@@ -47,4 +47,4 @@ Contact the maintainer directly. Do not open a public issue for security vulnera
 
 ---
 
-*See [Improvement Plan — RiskFree](../../Obsidian/Portfolio-Due-Diligence/03-Improvement-Plan-RiskFree.md) for the full security hardening roadmap.*
+*Open items are ranked in [docs/GAPS.md](docs/GAPS.md).*

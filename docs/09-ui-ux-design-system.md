@@ -1,5 +1,7 @@
 # GCC AI Credit Scoring & Risk Platform — UI/UX Enhancement Package
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 ## 1. FULL UI/UX ENHANCEMENT DOCUMENT
 
 ### UX Principles for GCC Banking

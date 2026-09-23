@@ -1,5 +1,7 @@
 # Regulatory Positioning
 
+> Status: DRAFT (planning only, not legal advice) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 **Status:** Draft — for planning purposes only. Not legal advice.
 
 ## Product Classification Question
@@ -50,4 +52,4 @@ If RLens positions as a tool that *supports* human credit decisions (not replace
 
 ---
 
-*See [Improvement Plan — RiskFree](../../Obsidian/Portfolio-Due-Diligence/03-Improvement-Plan-RiskFree.md) for the full regulatory roadmap.*
+*The decision this forces is recorded as [ADR-002](13-decision-log.md#adr-002-position-as-decision-support-no-auto-approve-or-auto-decline-on-model-score-alone); open items are in [GAPS.md](GAPS.md).*

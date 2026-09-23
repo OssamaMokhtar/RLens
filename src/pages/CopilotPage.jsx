@@ -39,6 +39,11 @@ function CopilotChat({ chat, setChat, locale }) {
 
   return (
     <div className="copilot-chat">
+      <div className="chat-typing" role="note" style={{ marginBottom: 8 }}>
+        {locale === 'ar'
+          ? 'نموذج أولي: لا يتم استدعاء أي نموذج ذكاء اصطناعي. الردود نصوص ثابتة للعرض فقط.'
+          : 'Prototype: no AI model is called. Replies are fixed sample text for demonstration.'}
+      </div>
       <div className="chat-messages">
         {chat.length === 0 ? (
           <div className="chat-message chat-assistant">

@@ -33,4 +33,4 @@ For privacy inquiries, contact the maintainer.
 
 ---
 
-*See [Improvement Plan — RiskFree](../../Obsidian/Portfolio-Due-Diligence/03-Improvement-Plan-RiskFree.md) for the full compliance roadmap.*
+*Open items are ranked in [docs/GAPS.md](docs/GAPS.md).*

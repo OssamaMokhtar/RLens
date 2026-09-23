@@ -1,5 +1,7 @@
 # API Endpoints Specification
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 ## Base URL Structure
 ```
 https://api.{country}.creditscore.bank/api/v1/

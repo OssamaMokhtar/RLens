@@ -4,7 +4,7 @@
 
 > Retail and SME credit decisioning with explainable scoring, AML/fraud screening, and an LLM copilot over regulatory policy — designed for Arabic/English markets.
 
-**[Architecture](docs/01-system-architecture.md)** · **[All documentation](#documentation)** · **[Scoring logic](docs/07-scoring-logic.md)**
+**Architecture docs:** [full set](docs/README.md) · [status](docs/00-status.md) · [system architecture](docs/01-system-architecture.md) · [scoring logic](docs/07-scoring-logic.md) · [decision log](docs/13-decision-log.md) · [evaluation and fairness](docs/14-evaluation-and-fairness.md) · [gaps](docs/GAPS.md)
 
 ---
 
@@ -45,6 +45,10 @@ The substance of this project is the product and architecture thinking. Start he
 | [09 · UI/UX design system](docs/09-ui-ux-design-system.md) | Components and interaction patterns |
 | [10 · Bilingual tone pack](docs/10-bilingual-tone-pack.md) | AR/EN voice, copy rules, RTL considerations |
 | [11 · Fintech UX elevation spec](docs/11-fintech-ux-elevation-spec.md) | Interaction quality bar |
+| [12 · Regulatory positioning](docs/12-regulatory-positioning.md) | Decisioning system or decision support? |
+| [13 · Decision log](docs/13-decision-log.md) | ADRs: LLM explains never decides; decision support; rules before model; fairness gate |
+| [14 · Evaluation and fairness](docs/14-evaluation-and-fairness.md) | Pass bars set before any model exists |
+| [GAPS](docs/GAPS.md) | What is open, ranked |
 
 ## Repository layout
 

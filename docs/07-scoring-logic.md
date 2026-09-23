@@ -1,5 +1,7 @@
 # Risk Scoring Logic — Retail & SME
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 ## 1. Retail Credit Scoring
 
 ### 1.1 Scoring Flow

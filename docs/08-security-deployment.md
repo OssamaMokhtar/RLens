@@ -1,5 +1,7 @@
 # Security Checklist & Deployment Plan
 
+> Status: SPEC (target design, not built) · Updated 2026-09-23 · Owner: Ossama Mokhtar
+
 ## 1. Security Checklist
 
 ### 1.1 Authentication & Authorization
